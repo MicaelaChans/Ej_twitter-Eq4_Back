@@ -2,13 +2,16 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController");
 const ensureAuthenticated = require("../middlewares/ensureAuthenticated");
-const tweetController = require("../controllers/tweetController");
-const makeUserAvailableInViews = require("../middlewares/makeUserAvailableInViews");
+const { expressjwt: checkJwt } = require("express-jwt");
 
 router.get("/register", userController.create);
 router.post("/register", userController.store);
 router.use(ensureAuthenticated);
-router.get("/", userController.index);
+router.get(
+  "/",
+  checkJwt({ secret: "UnStringMuyPeroMuySecreto", algorithms: ["HS256"] }),
+  userController.index,
+);
 router.get("/:username", userController.show);
 
 router.get("/:id/followers", userController.showFollowers);

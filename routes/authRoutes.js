@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const pagesController = require("../controllers/pagesController");
-
+const authController = require("../controllers/authCotroller");
+/*
 router.get("/login", pagesController.login);
 router.post(
   "/login",
@@ -10,7 +11,11 @@ router.post(
     failureRedirect: "/login",
   }),
 );
+*/
 
+authRouter.post("/tokens", authController.tokens);
+
+/*
 router.get("/logout", function (req, res, next) {
   req.session.destroy(function (err) {
     if (err) {
@@ -20,5 +25,6 @@ router.get("/logout", function (req, res, next) {
     res.redirect("/login");
   });
 });
+*/
 
 module.exports = router;
