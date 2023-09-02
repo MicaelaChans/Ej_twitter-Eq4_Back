@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const pagesController = require("../controllers/pagesController");
-const authController = require("../controllers/authCotroller");
+const authController = require("../controllers/authController");
 
-authRouter.post("/tokens", authController.tokens);
+router.post("/tokens", authController.tokens);
 
 module.exports = router;

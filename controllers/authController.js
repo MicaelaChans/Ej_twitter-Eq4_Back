@@ -11,4 +11,4 @@ const authController = {
     res.send({ token });
   },
 };
-export default authController;
+module.exports = authController;
