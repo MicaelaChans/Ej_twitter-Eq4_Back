@@ -38,20 +38,47 @@ const register = async (req, res) => {
       { expiresIn: "1d" },
       (err, token) => {
         if (err) console.log(err);
-        res.writeContinue(token);
+        res.json(token);
         console.log({ token });
       },
     );
-    res.writeContinue(registeredUser);
+    res.json(registeredUser);
     return console.log("Usuario y token creados!");
   } catch (err) {
     console.log(err);
   }
 };
 
-const login = (req, res) => {
+const login = async (req, res) => {
   res.send("Entraste en Login (backend)");
   const { username, password } = req.body;
-  console.log(req.body);
+
+  try {
+    const userFound = await User.findOne({ username: username });
+    if (!userFound) return res.status(404).json({ error: "No se encontró usuario" });
+
+    const verifyPass = await bcrypt.compare(password, userFound.password);
+
+    if (!verifyPass) return res.status(404).json({ error: "Credenciales incorrectas" });
+
+    jwt.sign({ id: userFound._id }, process.env.JWT_SECRET, { expiresIn: "1d" }, (err, token) => {
+      if (err) console.log(err);
+      res.writeContinue(token);
+      console.log({ token });
+    });
+
+    res.writeContinue(userFound);
+    console.log({ userFound });
+    return console.log("Usuario logeado!");
+  } catch (err) {
+    console.log(err);
+  }
 };
-module.exports = { register, login };
+
+const logout = async (req, res) => {
+  res.send("Entraste en Login (backend)");
+
+  return console.log("Usuario hizo logout!");
+};
+
+module.exports = { register, login, logout };
