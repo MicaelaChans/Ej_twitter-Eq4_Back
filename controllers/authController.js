@@ -53,21 +53,16 @@ const login = async (req, res) => {
 
   try {
     const userFound = await User.findOne({ username: username });
-    if (!userFound) return res.status(404).json({ error: "No se encontró usuario" });
+    if (!userFound) return res.json({ error: "Credenciales incorrectas" });
 
     const verifyPass = await bcrypt.compare(password, userFound.password);
 
-    if (!verifyPass) return res.status(404).json({ error: "Credenciales incorrectas" });
+    if (!verifyPass) return res.json({ error: "Credenciales incorrectas" });
 
     jwt.sign({ id: userFound._id }, process.env.JWT_SECRET, { expiresIn: "1d" }, (err, token) => {
       if (err) return console.log(err);
-      console.log({ token });
-      return res.json(token);
+      return res.json({ token: token, userFound });
     });
-
-    console.log({ userFound });
-    console.log("Usuario logeado!");
-    return res.json(userFound);
   } catch (err) {
     console.log(err);
   }
