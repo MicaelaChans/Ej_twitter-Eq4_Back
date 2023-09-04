@@ -16,6 +16,7 @@
 const { faker } = require("@faker-js/faker");
 const User = require("../models/User");
 const Tweet = require("../models/Tweet");
+const bcrypt = require("bcryptjs");
 
 faker.locale = "es";
 
@@ -23,12 +24,14 @@ async function userSeeders() {
   const users = [];
   const userTweets = [];
 
+  const passwordHash = await bcrypt.hash("1234", 10);
+
   for (let i = 0; i < 15; i++) {
     const user = new User({
       firstname: faker.name.firstName(),
       lastname: faker.name.lastName(),
       username: faker.internet.userName(),
-      password: 1234,
+      password: passwordHash.toString(),
       email: faker.internet.email(),
       bio: faker.lorem.text(10),
       profilePic: faker.internet.avatar(),
