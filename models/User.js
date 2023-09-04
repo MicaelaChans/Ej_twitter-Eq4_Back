@@ -9,7 +9,10 @@ const userSchema = new Schema(
     email: String,
     password: String,
     bio: String,
-    profilePic: String,
+    profilePic: {
+      type: String,
+      required: false,
+    },
     tweetsList: [
       {
         type: Schema.Types.ObjectId,

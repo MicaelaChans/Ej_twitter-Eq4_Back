@@ -15,8 +15,7 @@ const authController = {
 };
 
 const register = async (req, res) => {
-  res.send("Entraste en Register (backend)");
-  const { firstname, lastname, email, username, password, profilePic } = req.body;
+  const { firstname, lastname, email, username, password /*profilePic*/ } = req.body;
 
   try {
     const passwordHash = await bcrypt.hash(password, 10);
@@ -27,7 +26,7 @@ const register = async (req, res) => {
       email: email,
       username: username,
       password: passwordHash,
-      profilePic: profilePic,
+      /*profilePic: profilePic*/
     });
     const registeredUser = await newUser.save();
     console.log(newUser);
@@ -37,9 +36,9 @@ const register = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "1d" },
       (err, token) => {
-        if (err) console.log(err);
-        res.json(token);
+        if (err) return console.log(err);
         console.log({ token });
+        return res.json(token);
       },
     );
     res.json(registeredUser);
@@ -50,7 +49,6 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  res.send("Entraste en Login (backend)");
   const { username, password } = req.body;
 
   try {
@@ -62,14 +60,14 @@ const login = async (req, res) => {
     if (!verifyPass) return res.status(404).json({ error: "Credenciales incorrectas" });
 
     jwt.sign({ id: userFound._id }, process.env.JWT_SECRET, { expiresIn: "1d" }, (err, token) => {
-      if (err) console.log(err);
-      res.writeContinue(token);
+      if (err) return console.log(err);
       console.log({ token });
+      return res.json(token);
     });
 
-    res.writeContinue(userFound);
     console.log({ userFound });
-    return console.log("Usuario logeado!");
+    console.log("Usuario logeado!");
+    return res.json(userFound);
   } catch (err) {
     console.log(err);
   }
