@@ -1,18 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
-const authController = {
-  tokens: async (req, res) => {
-    console.log(req.body);
-    const user = await User.findOne({ username: req.body.username });
-    if (!user) return res.json({ error: "Wrong credentials..." });
-    const validatePassword = user.password === req.body.password;
-    if (!validatePassword) return res.json({ error: "Wrong credentials..." });
-    const token = jwt.sign({ sub: user.id, username: user.username }, process.env.JWT_SECRET);
-    res.send({ token });
-  },
-};
+const mongoose = require("mongoose");
 
 const register = async (req, res) => {
   const { firstname, lastname, email, username, password /*profilePic*/ } = req.body;
@@ -52,7 +41,11 @@ const login = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const userFound = await User.findOne({ username: username });
+    const userFound = await User.findOne({ username: username }).populate({
+      path: "followingUsers",
+      path: "followersUsers",
+      path: "tweetsList",
+    });
     if (!userFound) return res.json({ error: "Credenciales incorrectas" });
 
     const verifyPass = await bcrypt.compare(password, userFound.password);

@@ -9,7 +9,11 @@ async function index(req, res) {
 
 // Display the specified resource.
 async function show(req, res) {
-  const users = await User.find();
+  const users = await User.find().populate({
+    path: "followingUsers",
+    path: "followersUsers",
+    path: "tweetsList",
+  });
   return res.json(users);
 }
 
