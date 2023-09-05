@@ -33,7 +33,7 @@ async function userSeeders() {
       username: faker.internet.userName(),
       password: passwordHash.toString(),
       email: faker.internet.email(),
-      bio: faker.lorem.text(10),
+      bio: faker.lorem.words(12),
       profilePic: faker.internet.avatar(),
     });
     users.push(user);

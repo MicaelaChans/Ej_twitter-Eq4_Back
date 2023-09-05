@@ -65,7 +65,6 @@ async function destroy(req, res) {
 // ...
 
 module.exports = {
-  index,
   tweetStore,
   tweetLike,
   destroy,
