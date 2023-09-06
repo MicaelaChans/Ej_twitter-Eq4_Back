@@ -54,14 +54,14 @@ const login = async (req, res) => {
     if (!verifyPass) return res.json({ error: "Credenciales incorrectas" });
 
     console.log(userFound.id);
+    const selfTweets = await Tweet.find({ author: userFound.id }).populate("author");
     const followingTweets = await Tweet.find({
       author: { $in: userFound.followingUsers },
     }).populate("author");
-    console.log(followingTweets);
 
     jwt.sign({ id: userFound._id }, process.env.JWT_SECRET, { expiresIn: "1d" }, (err, token) => {
       if (err) return console.log(err);
-      return res.json({ token: token, userFound, followingTweets });
+      return res.json({ token: token, userFound, followingTweets, selfTweets });
     });
   } catch (err) {
     console.log(err);
