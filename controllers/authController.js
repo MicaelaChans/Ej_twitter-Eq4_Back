@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Tweet = require("../models/Tweet");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
@@ -45,15 +46,22 @@ const login = async (req, res) => {
       .populate("followersUsers")
       .populate("followingUsers")
       .populate("tweetsList");
+
     if (!userFound) return res.json({ error: "Credenciales incorrectas" });
 
     const verifyPass = await bcrypt.compare(password, userFound.password);
 
     if (!verifyPass) return res.json({ error: "Credenciales incorrectas" });
 
+    console.log(userFound.id);
+    const followingTweets = await Tweet.find({
+      author: { $in: userFound.followingUsers },
+    }).populate("author");
+    console.log(followingTweets);
+
     jwt.sign({ id: userFound._id }, process.env.JWT_SECRET, { expiresIn: "1d" }, (err, token) => {
       if (err) return console.log(err);
-      return res.json({ token: token, userFound });
+      return res.json({ token: token, userFound, followingTweets });
     });
   } catch (err) {
     console.log(err);
