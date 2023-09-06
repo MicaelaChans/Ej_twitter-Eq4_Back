@@ -5,7 +5,10 @@ const User = require("../models/User");
 async function index(req, res) {}
 
 // Display the specified resource.
-async function show(req, res) {}
+async function show(req, res) {
+  const users = await Tweet.find().populate("author").populate("likes");
+  return res.json(users);
+}
 
 // Show the form for creating a new resource
 async function create(req, res) {}
@@ -65,6 +68,7 @@ async function destroy(req, res) {
 // ...
 
 module.exports = {
+  show,
   tweetStore,
   tweetLike,
   destroy,

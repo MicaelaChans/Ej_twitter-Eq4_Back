@@ -41,11 +41,10 @@ const login = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const userFound = await User.findOne({ username: username }).populate({
-      path: "followingUsers",
-      path: "followersUsers",
-      path: "tweetsList",
-    });
+    const userFound = await User.findOne({ username: username })
+      .populate("followersUsers")
+      .populate("followingUsers")
+      .populate("tweetsList");
     if (!userFound) return res.json({ error: "Credenciales incorrectas" });
 
     const verifyPass = await bcrypt.compare(password, userFound.password);
