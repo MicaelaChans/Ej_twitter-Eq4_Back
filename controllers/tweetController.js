@@ -16,8 +16,7 @@ async function create(req, res) {}
 // Store a newly created resource in storage.
 async function store(req, res) {
   const user = await User.findById(req.auth.id);
-  console.log(user);
-  console.log(req.body);
+
   try {
     const tweet = await Tweet.create({
       content: req.body.content,
@@ -56,10 +55,9 @@ async function update(req, res) {}
 // Remove the specified resource from storage.
 async function destroy(req, res) {
   try {
-    const tweetId = req.params.id;
+    const tweetId = req.body.tweetId;
     await Tweet.findByIdAndRemove(tweetId);
-    console.log("tweet borrado");
-    res.redirect(`/${req.user.username}`);
+    res.json("Tweet borrado");
   } catch (error) {
     console.log("Error al eliminar tweet", error);
   }
