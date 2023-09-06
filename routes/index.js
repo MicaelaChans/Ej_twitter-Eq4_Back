@@ -5,5 +5,5 @@ const tweetRoutes = require("./tweetRoutes");
 module.exports = (app) => {
   app.use("/", userRoutes);
   app.use("/api", authRoutes);
-  app.use("/", tweetRoutes);
+  app.use("/tweets", tweetRoutes);
 };

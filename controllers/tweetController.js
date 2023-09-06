@@ -14,17 +14,18 @@ async function show(req, res) {
 async function create(req, res) {}
 
 // Store a newly created resource in storage.
-async function tweetStore(req, res) {
-  const user = req.user;
+async function store(req, res) {
+  const user = await User.findById(req.auth.id);
+  console.log(user);
+  console.log(req.body);
   try {
     const tweet = await Tweet.create({
       content: req.body.content,
-      author: req.user.id,
+      author: user._id,
       likes: [],
     });
     user.tweetsList.push(tweet);
     user.save();
-    console.log("Tweet publicado");
     return res.redirect("/");
   } catch (error) {
     console.log("Error al obtener los datos", error);
@@ -69,7 +70,7 @@ async function destroy(req, res) {
 
 module.exports = {
   show,
-  tweetStore,
+  store,
   tweetLike,
   destroy,
 };
