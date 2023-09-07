@@ -1,5 +1,6 @@
 const Tweet = require("../models/Tweet");
 const User = require("../models/User");
+const jwt = require("jsonwebtoken");
 
 // Display a listing of the resource.
 async function index(req, res) {}
@@ -25,7 +26,7 @@ async function store(req, res) {
     });
     user.tweetsList.push(tweet);
     user.save();
-    return res.redirect("/");
+    return res.json({ msg: "Tweet creado" });
   } catch (error) {
     console.log("Error al obtener los datos", error);
   }
@@ -35,18 +36,19 @@ async function store(req, res) {
 async function edit(req, res) {}
 
 async function tweetLike(req, res) {
-  const user = req.user;
+  const user = req.auth.id;
   //const follower = await User.findOneAndUpdate({ username: req.params.id });
-  const tweet = await Tweet.findOne({ _id: req.params.id });
-
-  if (!tweet.likes.includes(user.id)) {
+  const tweet = await Tweet.findOne({ _id: req.body.tweetId });
+  console.log(req.body);
+  if (!tweet.likes.includes(user)) {
     tweet.likes.push(user);
     tweet.save();
+    return res.json({ msg: "Me gusta el tweet" });
   } else {
     tweet.likes.remove(user);
     tweet.save();
+    return res.json({ msg: "No me gusta el tweet" });
   }
-  return res.redirect("/");
 }
 
 // Update the specified resource in storage.

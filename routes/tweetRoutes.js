@@ -14,6 +14,10 @@ router.delete(
   checkJwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }),
   tweetController.destroy,
 );
-router.get("/like/:id", tweetController.tweetLike);
+router.patch(
+  "/like/:id",
+  checkJwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }),
+  tweetController.tweetLike,
+);
 
 module.exports = router;
